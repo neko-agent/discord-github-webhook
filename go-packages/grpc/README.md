@@ -5,7 +5,7 @@ Reusable gRPC server wrapper with graceful shutdown support.
 ## Installation
 
 ```go
-import grpcserver "polycoin/grpc"
+import grpcserver "dizzycode1112/grpc"
 ```
 
 ## Usage
@@ -47,13 +47,13 @@ server := grpcserver.NewServer(&grpcserver.ServerDeps{
 
 ## API
 
-| Method | Description |
-|--------|-------------|
-| `NewServer(deps)` | Create server, deps is optional |
-| `GrpcServer()` | Returns underlying `*grpc.Server` for service registration |
-| `EnableReflection()` | Enable gRPC reflection for debugging tools like grpcurl |
-| `Run(port)` | Start server, block until SIGINT/SIGTERM |
-| `GracefulStop()` | Stop server gracefully |
+| Method               | Description                                                |
+| -------------------- | ---------------------------------------------------------- |
+| `NewServer(deps)`    | Create server, deps is optional                            |
+| `GrpcServer()`       | Returns underlying `*grpc.Server` for service registration |
+| `EnableReflection()` | Enable gRPC reflection for debugging tools like grpcurl    |
+| `Run(port)`          | Start server, block until SIGINT/SIGTERM                   |
+| `GracefulStop()`     | Stop server gracefully                                     |
 
 ## Full Example
 
@@ -63,9 +63,9 @@ package main
 import (
     "log"
 
-    grpcserver "polycoin/grpc"
-    pb "polycoin/grpc/pb/user"
-    "polycoin/logger"
+    grpcserver "dizzycode1112/grpc"
+    pb "dizzycode1112/grpc/pb/user"
+    "dizzycode1112/logger"
     "yourapp/internal/config"
     "yourapp/internal/handlers"
 )

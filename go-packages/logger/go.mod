@@ -1,4 +1,4 @@
-module dizzycoder1112/Dockerize-Monorepo-Structure-In-Node-And-Golang/logger
+module dizzycoder1112/logger
 
 go 1.25.1
 

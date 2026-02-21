@@ -1,7 +1,7 @@
 package strategies
 
 import (
-	"dizzycoder1112/Dockerize-Monorepo-Structure-In-Node-And-Golang/logger"
+	"dizzycoder1112/logger"
 	"encoding/json"
 	"fmt"
 

@@ -19,4 +19,4 @@ jobs:
       - name: Run registry garbage collection
         run: |
           # Try using yes command repeatedly
-          doctl registry garbage-collection start polycoin --include-untagged-manifests --force
+          doctl registry garbage-collection start dizzycode1112 --include-untagged-manifests --force
