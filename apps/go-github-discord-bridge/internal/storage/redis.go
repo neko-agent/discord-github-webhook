@@ -94,6 +94,16 @@ func (r *RedisStore) MarkAsClosed(prID string) error {
 	return nil
 }
 
+// SetIfNotExists atomically stores prID → threadID only if prID does not already exist.
+// Returns (true, nil) if the key was set, (false, nil) if it already existed.
+func (r *RedisStore) SetIfNotExists(prID, threadID string, ttl time.Duration) (bool, error) {
+	result, err := r.client.SetNX(context.Background(), prID, threadID, ttl).Result()
+	if err != nil {
+		return false, fmt.Errorf("redis SetNX failed: %w", err)
+	}
+	return result, nil
+}
+
 // Close 關閉 Redis 連線
 func (r *RedisStore) Close() error {
 	return r.client.Close()

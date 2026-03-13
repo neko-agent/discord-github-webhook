@@ -8,6 +8,7 @@ import (
 	"fmt"
 	"io"
 	"strings"
+	"time"
 
 	"dizzycode1112/github-discord-bridge/internal/config"
 	"dizzycode1112/github-discord-bridge/internal/discord"
@@ -187,6 +188,7 @@ func (app *App) handleEvent(ghEvent string, payload *github.WebhookPayload) erro
 func (app *App) handlePROpened(prID string, pr *github.PullRequest, repoFullName string) error {
 	log := applogger.Log
 
+	// Check if thread already exists
 	if existingThreadID, exists, _ := app.store.Get(prID); exists {
 		log.Info("Thread already exists", "prID", prID, "threadID", existingThreadID)
 		return nil
@@ -213,8 +215,20 @@ func (app *App) handlePROpened(prID string, pr *github.PullRequest, repoFullName
 		return fmt.Errorf("failed to create thread: %w", err)
 	}
 
-	if err := app.store.Set(prID, threadID); err != nil {
+	// Atomic: only store if no one else beat us to it
+	stored, err := app.store.SetIfNotExists(prID, threadID, 30*24*time.Hour)
+	if err != nil {
 		return fmt.Errorf("failed to save mapping: %w", err)
+	}
+
+	if !stored {
+		// Lost the race — another goroutine created a thread first.
+		// Archive our duplicate to keep Discord clean.
+		log.Info("Lost race, archiving duplicate thread", "prID", prID, "threadID", threadID)
+		if archiveErr := app.discordClient.ArchiveThread(threadID); archiveErr != nil {
+			log.Error("Failed to archive duplicate thread", "error", archiveErr)
+		}
+		return nil
 	}
 
 	log.Info("Created thread", "prID", prID, "threadID", threadID)

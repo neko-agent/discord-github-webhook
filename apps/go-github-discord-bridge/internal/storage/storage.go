@@ -1,5 +1,7 @@
 package storage
 
+import "time"
+
 // Store 定義 PR → Discord Thread ID 的儲存介面
 type Store interface {
 	// Set 儲存 PR 和 Thread 的對應關係（無 TTL）
@@ -13,4 +15,8 @@ type Store interface {
 
 	// MarkAsClosed 標記 PR 已關閉，設定 7 天 TTL
 	MarkAsClosed(prID string) error
+
+	// SetIfNotExists atomically stores the mapping only if no entry exists for prID.
+	// Returns (true, nil) if stored, (false, nil) if already existed, or (false, err) on error.
+	SetIfNotExists(prID, threadID string, ttl time.Duration) (bool, error)
 }
